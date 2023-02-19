@@ -1,0 +1,38 @@
+void Books.ListWarehouse()
+{
+	mp = Map();
+	org = "789631325";
+	if(!isNull(org))
+	{
+		mm = Map();
+		resp = invokeurl
+		[
+			url :"https://inventory.zoho.com/api/v1/settings/warehouses?organization_id=" + org
+			type :GET
+			parameters:mm
+			connection:"zinventory"
+		];
+		resp_list = resp.get("warehouses").toJSONList();
+		info resp_list;
+		for each  rec in resp_list
+		{
+			ft = Warehouse[Zoho_Books_ID == rec.get("warehouse_id")].count(ID);
+			if(ft == 0)
+			{
+				insert into Warehouse
+				[
+					Added_User=zoho.loginuser
+					Warehouse_Name=rec.get("warehouse_name")
+					Zoho_Books_ID=rec.get("warehouse_id")
+					Status=rec.get("status")
+				]
+			}
+			else
+			{
+				ch = Warehouse[Zoho_Books_ID == rec.get("warehouse_id")];
+				ch.Warehouse_Name=ifnull(rec.get("warehouse_name"),"");
+				ch.Zoho_Books_ID=rec.get("warehouse_id");
+			}
+		}
+	}
+}
