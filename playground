@@ -1,7 +1,7 @@
 void Books.ListWarehouse()
 {
 	mp = Map();
-	org = "789631325";
+	org = "xxxxxxx";
 	if(!isNull(org))
 	{
 		mm = Map();
